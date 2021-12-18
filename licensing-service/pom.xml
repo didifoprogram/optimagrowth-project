@@ -20,6 +20,7 @@
   <properties>
     <java.version>11</java.version>
     <docker.image.prefix>ostock</docker.image.prefix>
+    <spring-cloud.version>2020.0.0</spring-cloud.version>
   </properties>
 
   <dependencies>
@@ -31,8 +32,8 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-bootstrap</artifactId>
-      <version>3.1.0</version>
-  </dependency>
+
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -58,17 +59,12 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-config</artifactId>
-      <version>3.1.0</version>
+
     </dependency>
 
-   <dependency>
-     <groupId>org.springframework.data</groupId>
-     <artifactId>spring-data-jpa</artifactId>
-   </dependency>
-
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>javax.persistence-api</artifactId>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
     </dependency>
 
     <dependency>
@@ -78,14 +74,18 @@
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-feign</artifactId>
-      <version>1.4.7.RELEASE</version>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+
     </dependency>
 
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-loadbalancer</artifactId>
-      <version>3.1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>javax.persistence-api</artifactId>
     </dependency>
 
     <dependency>
@@ -96,10 +96,22 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-      <version>3.1.0</version>
+
     </dependency>
 
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <plugins>

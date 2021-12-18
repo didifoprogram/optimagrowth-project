@@ -20,7 +20,7 @@ public class LicenseService {
   MessageSource messages;
 
   @Autowired
-  LicenseRepository licenseRepository;
+  private LicenseRepository licenseRepository;
 
   @Autowired
   ServiceConfig config;
@@ -29,31 +29,31 @@ public class LicenseService {
   OrganizationFeignClient organizationFeignClient;
 
   @Autowired
-  OrganizationRestTemplateClient organizationRestTemplateClient;
+  OrganizationRestTemplateClient organizationRestClient;
 
   @Autowired
   OrganizationDiscoveryClient organizationDiscoveryClient;
 
-
-  public License getLicense(String licenseId, String organizationId, String clientType) {
+  public License getLicense(String licenseId, String organizationId, String clientType){
     License license = licenseRepository.findByOrganizationIdAndLicenseId(organizationId, licenseId);
-    if (license == null) {
-      throw new IllegalArgumentException(
-          String.format(messages.getMessage("license.search.error.message", null, null), licenseId,
-              organizationId));
+    if (null == license) {
+      throw new IllegalArgumentException(String.format(messages.getMessage("license.search.error.message", null, null),licenseId, organizationId));
     }
+
     Organization organization = retrieveOrganizationInfo(organizationId, clientType);
-    if (organization != null) {
+    if (null != organization) {
       license.setOrganizationName(organization.getName());
       license.setContactName(organization.getContactName());
       license.setContactEmail(organization.getContactEmail());
       license.setContactPhone(organization.getContactPhone());
     }
+
     return license.withComment(config.getProperty());
   }
 
   private Organization retrieveOrganizationInfo(String organizationId, String clientType) {
     Organization organization = null;
+
     switch (clientType) {
       case "feign":
         System.out.println("I am using the feign client");
@@ -61,38 +61,41 @@ public class LicenseService {
         break;
       case "rest":
         System.out.println("I am using the rest client");
-        organization = organizationRestTemplateClient.getOrganization(organizationId);
+        organization = organizationRestClient.getOrganization(organizationId);
         break;
       case "discovery":
         System.out.println("I am using the discovery client");
         organization = organizationDiscoveryClient.getOrganization(organizationId);
         break;
       default:
-        organization = organizationRestTemplateClient.getOrganization(organizationId);
+        organization = organizationRestClient.getOrganization(organizationId);
         break;
     }
+
     return organization;
   }
 
-  public License createLicense(License license) {
+  public License createLicense(License license){
     license.setLicenseId(UUID.randomUUID().toString());
     licenseRepository.save(license);
+
     return license.withComment(config.getProperty());
   }
 
-  public License updateLicense(License license) {
+  public License updateLicense(License license){
     licenseRepository.save(license);
+
     return license.withComment(config.getProperty());
   }
 
-  public String deleteLicense(String licenseId) {
+  public String deleteLicense(String licenseId){
     String responseMessage = null;
     License license = new License();
     license.setLicenseId(licenseId);
     licenseRepository.delete(license);
-    responseMessage = String.format(messages.getMessage("license.delete.message", null, null),
-        licenseId);
+    responseMessage = String.format(messages.getMessage("license.delete.message", null, null),licenseId);
     return responseMessage;
+
   }
 
   public List<License> getLicensesByOrganization(String organizationId) {

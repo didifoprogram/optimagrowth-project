@@ -13,7 +13,6 @@ public class OrganizationService {
   @Autowired
   OrganizationRepository organizationRepository;
 
-
   public Organization findById(String organizationId) {
     Optional<Organization> opt = organizationRepository.findById(organizationId);
     return opt.orElse(null);
