@@ -1,0 +1,1 @@
+docker run -p 8071:8071 1b0802bb55bb -e ENCRYPT_KEY=IMSYMMETRIC
