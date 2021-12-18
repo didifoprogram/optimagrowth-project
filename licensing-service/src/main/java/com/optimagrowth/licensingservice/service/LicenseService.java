@@ -7,8 +7,12 @@ import com.optimagrowth.licensingservice.repository.LicenseRepository;
 import com.optimagrowth.licensingservice.service.client.OrganizationDiscoveryClient;
 import com.optimagrowth.licensingservice.service.client.OrganizationFeignClient;
 import com.optimagrowth.licensingservice.service.client.OrganizationRestTemplateClient;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -95,10 +99,25 @@ public class LicenseService {
     licenseRepository.delete(license);
     responseMessage = String.format(messages.getMessage("license.delete.message", null, null),licenseId);
     return responseMessage;
-
   }
 
+  private void randomlyRunLong() {
+    Random random = new Random();
+    int randomNum = random.nextInt(3) + 1;
+    if(randomNum == 3) sleep();
+  }
+  private void sleep() {
+    try {
+      Thread.sleep(5000);
+      throw new java.util.concurrent.TimeoutException();
+    } catch (InterruptedException | TimeoutException e) {
+      Logger.getAnonymousLogger().warning(e.getMessage());
+    }
+  }
+
+  @CircuitBreaker(name = "licenseService")
   public List<License> getLicensesByOrganization(String organizationId) {
+    randomlyRunLong(); // TODO REMOVE THIS
     return licenseRepository.findByOrganizationId(organizationId);
   }
 }

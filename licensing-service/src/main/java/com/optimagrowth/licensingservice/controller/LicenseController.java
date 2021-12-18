@@ -71,7 +71,7 @@ public class LicenseController {
     return ResponseEntity.ok(licenseService.deleteLicense(licenseId));
   }
 
-  @GetMapping(value = "/")
+  @GetMapping()
   public List<License> getLicenses(@PathVariable("organizationId") String organizationId) {
     return licenseService.getLicensesByOrganization(organizationId);
   }
