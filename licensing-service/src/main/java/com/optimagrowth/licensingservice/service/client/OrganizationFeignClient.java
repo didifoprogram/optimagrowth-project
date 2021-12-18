@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "organization-service")
 public interface OrganizationFeignClient {
 
-  @RequestMapping(method = RequestMethod.GET,
+  @RequestMapping(
+      method = RequestMethod.GET,
       value = "/v1/organization/{organizationId}",
       consumes = "application/json")
   Organization getOrganization(@PathVariable("organizationId") String organizationId);
