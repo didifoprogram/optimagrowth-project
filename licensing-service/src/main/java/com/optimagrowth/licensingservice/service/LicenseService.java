@@ -8,17 +8,21 @@ import com.optimagrowth.licensingservice.service.client.OrganizationDiscoveryCli
 import com.optimagrowth.licensingservice.service.client.OrganizationFeignClient;
 import com.optimagrowth.licensingservice.service.client.OrganizationRestTemplateClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LicenseService {
+
+  private static final Logger logger = LoggerFactory.getLogger(LicenseService.class);
 
   @Autowired
   MessageSource messages;
@@ -55,6 +59,11 @@ public class LicenseService {
     return license.withComment(config.getProperty());
   }
 
+  @CircuitBreaker(name = "organizationService")
+  private Organization getOrganization(String organizationId){
+    return organizationRestClient.getOrganization(organizationId);
+  }
+
   private Organization retrieveOrganizationInfo(String organizationId, String clientType) {
     Organization organization = null;
 
@@ -65,7 +74,7 @@ public class LicenseService {
         break;
       case "rest":
         System.out.println("I am using the rest client");
-        organization = organizationRestClient.getOrganization(organizationId);
+        organization = getOrganization(organizationId);
         break;
       case "discovery":
         System.out.println("I am using the discovery client");
@@ -101,23 +110,35 @@ public class LicenseService {
     return responseMessage;
   }
 
-  private void randomlyRunLong() {
+  private void randomlyRunLong() throws TimeoutException {
     Random random = new Random();
     int randomNum = random.nextInt(3) + 1;
     if(randomNum == 3) sleep();
   }
-  private void sleep() {
+
+  private void sleep() throws TimeoutException {
     try {
       Thread.sleep(5000);
       throw new java.util.concurrent.TimeoutException();
-    } catch (InterruptedException | TimeoutException e) {
-      Logger.getAnonymousLogger().warning(e.getMessage());
+    } catch (InterruptedException e ) {
+      logger.error(e.getMessage());
     }
   }
 
-  @CircuitBreaker(name = "licenseService")
-  public List<License> getLicensesByOrganization(String organizationId) {
+  @CircuitBreaker(name = "licenseService",
+  fallbackMethod = "buildFallbackLicenseList")
+  public List<License> getLicensesByOrganization(String organizationId) throws TimeoutException {
     randomlyRunLong(); // TODO REMOVE THIS
     return licenseRepository.findByOrganizationId(organizationId);
+  }
+
+  private List<License> buildFallbackLicenseList (String organizationId, Throwable t) {
+    List<License> fallbackList = new ArrayList<>();
+    License license = new License();
+    license.setLicenseId("0000000-00-00000");
+    license.setOrganizationId(organizationId);
+    license.setProductName("Sorry no licensing information currently available");
+    fallbackList.add(license);
+    return fallbackList;
   }
 }

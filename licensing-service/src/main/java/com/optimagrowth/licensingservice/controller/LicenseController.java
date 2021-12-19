@@ -7,6 +7,7 @@ import com.optimagrowth.licensingservice.model.License;
 import com.optimagrowth.licensingservice.service.LicenseService;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -72,7 +73,7 @@ public class LicenseController {
   }
 
   @GetMapping()
-  public List<License> getLicenses(@PathVariable("organizationId") String organizationId) {
+  public List<License> getLicenses(@PathVariable("organizationId") String organizationId) throws TimeoutException {
     return licenseService.getLicensesByOrganization(organizationId);
   }
 }
