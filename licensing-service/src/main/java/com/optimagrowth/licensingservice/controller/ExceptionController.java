@@ -19,21 +19,20 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ExceptionController extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(value = {Exception.class})
-  public @ResponseBody
-  ResponseEntity<ResponseWrapper> handleException(HttpServletRequest request,
-      ResponseWrapper responseWrapper) {
+  public @ResponseBody ResponseEntity<ResponseWrapper> handleException(
+      HttpServletRequest request, ResponseWrapper responseWrapper) {
     return ResponseEntity.ok(responseWrapper);
   }
 
   @ExceptionHandler(value = {RuntimeException.class})
-  public ResponseEntity<ResponseWrapper> handleIOException(HttpServletRequest request,
-      RuntimeException e) {
-    RestErrorList errorList = new RestErrorList(HttpStatus.NOT_ACCEPTABLE,
-        new ErrorMessage(e.getMessage(), e.getMessage()));
+  public ResponseEntity<ResponseWrapper> handleIOException(
+      HttpServletRequest request, RuntimeException e) {
+    RestErrorList errorList =
+        new RestErrorList(
+            HttpStatus.NOT_ACCEPTABLE, new ErrorMessage(e.getMessage(), e.getMessage()));
     ResponseWrapper responseWrapper =
         new ResponseWrapper(null, singletonMap("status", HttpStatus.NOT_ACCEPTABLE), errorList);
 
     return ResponseEntity.ok(responseWrapper);
   }
-
 }

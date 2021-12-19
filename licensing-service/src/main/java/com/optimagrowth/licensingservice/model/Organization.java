@@ -15,5 +15,4 @@ public class Organization extends RepresentationModel<Organization> {
   String contactName;
   String contactEmail;
   String contactPhone;
-
 }

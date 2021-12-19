@@ -11,8 +11,7 @@ public class ResponseWrapper {
   private Object metadata;
   private List<ErrorMessage> errors;
 
-  public ResponseWrapper(Object data, Object metadata,
-      List<ErrorMessage> errors) {
+  public ResponseWrapper(Object data, Object metadata, List<ErrorMessage> errors) {
     this.data = data;
     this.metadata = metadata;
     this.errors = errors;
