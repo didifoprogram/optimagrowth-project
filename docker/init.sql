@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS public.licenses
     REFERENCES public.organizations (organization_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
-    NOT VALID
+    NOT DEFERRABLE
     )
 
     TABLESPACE pg_default;
