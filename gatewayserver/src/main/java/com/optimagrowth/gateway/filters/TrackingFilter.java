@@ -1,5 +1,7 @@
 package com.optimagrowth.gateway.filters;
 
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +34,31 @@ public class TrackingFilter implements GlobalFilter {
       exchange = filterUtils.setCorrelationId(exchange, correlationId);
       logger.debug("tmx-correlation-id generated in tracking filter: {}.", correlationId);
     }
-
+    logger.debug("Username is {}.", getUsername(requestHeaders));
     return chain.filter(exchange);
+  }
+
+  private String getUsername(HttpHeaders requestHeaders) {
+    String username = "";
+    if (filterUtils.getAuthToken(requestHeaders) != null) {
+      String authToken = filterUtils.getAuthToken(requestHeaders).replace("Bearer ", "");
+      JSONObject jsonObject = decodeJWT(authToken);
+      try {
+        username = jsonObject.getString("preferred_username");
+      } catch (Exception e) {
+        logger.debug(e.getMessage());
+      }
+    }
+    return username;
+  }
+
+  private JSONObject decodeJWT(String JWTToken) {
+    String[] split_string = JWTToken.split("\\.");
+    String base64EncodedBody = split_string[1];
+    Base64 base64Url = new Base64(true);
+    String body = new String(base64Url.decode(base64EncodedBody));
+    JSONObject jsonObject = new JSONObject(body);
+    return jsonObject;
   }
 
   private boolean isCorrelationIdPresent(HttpHeaders requestHeaders) {

@@ -41,6 +41,7 @@ public class LicenseController {
         "LicenseServiceController Correlation id: {}",
         UserContextHolder.getContext().getCorrelationId());
 
+    /* HATEOAS LINKS */
     License license = licenseService.getLicense(licenseId, organizationId, "");
     license.add(
         linkTo(methodOn(LicenseController.class).getLicense(organizationId, license.getLicenseId()))
