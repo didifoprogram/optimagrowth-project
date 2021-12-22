@@ -133,8 +133,7 @@ public class LicenseService {
     randomlyRunLong(); // TODO REMOVE THIS
 
     logger.debug(
-        "LicenseService Correlation id: {}",
-        UserContextHolder.getContext().getCorrelationId());
+        "LicenseService Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
 
     return licenseRepository.findByOrganizationId(organizationId);
   }

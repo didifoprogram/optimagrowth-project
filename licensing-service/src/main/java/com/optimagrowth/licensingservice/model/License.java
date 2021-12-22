@@ -35,18 +35,13 @@ public class License extends RepresentationModel<License> {
   @Column(name = "comment")
   private String comment;
 
-  @Transient
-  private String organizationName;
-  @Transient
-  private String contactName;
-  @Transient
-  private String contactPhone;
-  @Transient
-  private String contactEmail;
+  @Transient private String organizationName;
+  @Transient private String contactName;
+  @Transient private String contactPhone;
+  @Transient private String contactEmail;
 
   public License withComment(String comment) {
     this.setComment(comment);
     return this;
   }
-
 }

@@ -13,8 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class OrganizationDiscoveryClient {
 
-  @Autowired
-  private DiscoveryClient discoveryClient;
+  @Autowired private DiscoveryClient discoveryClient;
 
   public Organization getOrganization(String organizationId) {
 
@@ -26,13 +25,13 @@ public class OrganizationDiscoveryClient {
       return null;
     }
 
-    String serviceUri = String.format("%s/v1/organization/%s", instances.get(0).getUri().toString(),
-        organizationId);
+    String serviceUri =
+        String.format(
+            "%s/v1/organization/%s", instances.get(0).getUri().toString(), organizationId);
 
     ResponseEntity<Organization> restExchange =
         restTemplate.exchange(serviceUri, HttpMethod.GET, null, Organization.class, organizationId);
 
     return restExchange.getBody();
   }
-
 }
