@@ -1,5 +1,6 @@
 package com.optimagrowth.organization.service;
 
+import com.optimagrowth.organization.events.source.SimpleSourceBean;
 import com.optimagrowth.organization.model.Organization;
 import com.optimagrowth.organization.repository.OrganizationRepository;
 import java.util.Optional;
@@ -13,6 +14,9 @@ public class OrganizationService {
   @Autowired
   OrganizationRepository organizationRepository;
 
+  @Autowired
+  SimpleSourceBean simpleSourceBean;
+
   public Organization findById(String organizationId) {
     Optional<Organization> opt = organizationRepository.findById(organizationId);
     return opt.orElse(null);
@@ -21,6 +25,10 @@ public class OrganizationService {
   public Organization create(Organization organization) {
     organization.setId(UUID.randomUUID().toString());
     organization = organizationRepository.save(organization);
+
+    simpleSourceBean.publishOrganizationChange(
+            "CREATED", organization.getId());
+
     return organization;
   }
 

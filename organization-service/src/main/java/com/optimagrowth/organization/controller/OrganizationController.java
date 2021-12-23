@@ -22,6 +22,8 @@ public class OrganizationController {
 
   @Autowired OrganizationService service;
 
+
+
   @RolesAllowed({"ADMIN", "USER"})
   @GetMapping(value = "/{organizationId}")
   public ResponseEntity<Organization> getOrganization(
