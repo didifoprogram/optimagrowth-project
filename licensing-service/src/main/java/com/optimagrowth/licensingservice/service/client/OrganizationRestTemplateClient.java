@@ -17,7 +17,7 @@ public class OrganizationRestTemplateClient {
 
     private static final Logger logger = LoggerFactory.getLogger(OrganizationRestTemplateClient.class);
 
-    @Qualifier("keycloakRestTemplate")
+    
     @Autowired
     RestTemplate restTemplate;
 

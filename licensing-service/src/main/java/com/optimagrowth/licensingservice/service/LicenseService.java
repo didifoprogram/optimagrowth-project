@@ -70,7 +70,7 @@ public class LicenseService {
         break;
       case "rest":
         System.out.println("I am using the rest client");
-        organization = getOrganization(organizationId);
+        organization = organizationRestClient.getOrganization(organizationId);
         break;
       case "discovery":
         System.out.println("I am using the discovery client");

@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.8'
 services:
   configserver:
     image: ostock/configserver:0.0.1-SNAPSHOT
@@ -54,10 +54,18 @@ services:
         aliases:
           - "zookeeper"
 
+  redisserver:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      backend:
+        aliases:
+          - "redisserver"
+
   database:
     image: postgres:latest
-    container_name: postgres
-    hostname: database
+    container_name: database
     ports:
       - "5432:5432"
     environment:
@@ -65,8 +73,8 @@ services:
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "ostock_dev"
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
-      - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql:Z
+      - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql:Z
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
       timeout: 45s
@@ -124,6 +132,7 @@ services:
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT: "8071"
       DATABASESERVER_PORT: "5432"
+      DATABASE_HOST: database
       ENCRYPT_KEY: "IMSYMMETRIC"
     depends_on:
       database:
@@ -143,6 +152,7 @@ services:
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT: "8071"
       DATABASESERVER_PORT: "5432"
+      DATABASE_HOST: database
       ENCRYPT_KEY: "IMSYMMETRIC"
     depends_on:
       database:
