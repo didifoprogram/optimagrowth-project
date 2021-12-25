@@ -31,16 +31,21 @@ services:
     depends_on:
       - elasticsearch
     networks:
-      - backend
+      backend:
+        aliases:
+          - "elasticsearch"
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.16.2
+    container_name: logstash
     volumes:
       - ./config/logstash.conf:/usr/share/logstash/config/logstash.conf:ro
     ports:
       - "5000:5000"
     networks:
-      - backend
+      backend:
+        aliases:
+          - "logstash"
 
 networks:
   backend:

@@ -56,7 +56,8 @@ public class OrganizationRestTemplateClient {
         ResponseEntity<Organization> restExchange =
                 restTemplate.exchange(
                         /* 8072 is the gateway port */
-                        "http://localhost:8072/organization/v1/organization/{organizationId}",
+                        // TODO **TEMP DOCKER CONTAINER NAME
+                        "http://gateway:8072/organization/v1/organization/{organizationId}",
                         HttpMethod.GET,
                         null,
                         Organization.class,
