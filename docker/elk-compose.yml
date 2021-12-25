@@ -1,0 +1,51 @@
+version: '3'
+services:
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.2
+    container_name: elasticsearch
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    ports:
+      - "9300:9300"
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      backend:
+        aliases:
+          - "elasticsearch"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.16.2
+    environment:
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - backend
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.16.2
+    volumes:
+      - ./config/logstash.conf:/usr/share/logstash/config/logstash.conf:ro
+    ports:
+      - "5000:5000"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  esdata1:
+    driver: local
