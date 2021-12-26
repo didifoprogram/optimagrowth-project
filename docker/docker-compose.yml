@@ -132,11 +132,11 @@ services:
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT: "8071"
       DATABASESERVER_PORT: "5432"
-      DATABASE_HOST: database
+      DATABASE_HOST: "database"
       ENCRYPT_KEY: "IMSYMMETRIC"
     depends_on:
       database:
-        condition: service_started
+        condition: service_healthy
       configserver:
         condition: service_started
     ports:
@@ -152,11 +152,11 @@ services:
       CONFIGSERVER_URI: "http://configserver:8071"
       CONFIGSERVER_PORT: "8071"
       DATABASESERVER_PORT: "5432"
-      DATABASE_HOST: database
+      DATABASE_HOST: "database"
       ENCRYPT_KEY: "IMSYMMETRIC"
     depends_on:
       database:
-        condition: service_started
+        condition: service_healthy
       configserver:
         condition: service_started
     ports:
